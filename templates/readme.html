@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    {% load static %}  
+    <link rel="stylesheet" href="{% static '/global.css' %}" />
+    <link rel="stylesheet" href="{% static '/index.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=M PLUS 1:wght@600&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=M PLUS 1 Code:wght@600&display=swap"
+    />
+  </head>
+  <body>
+    <div class="page" id="readme">
+        <h1 id="api-details-">Api details:</h1>
+        <h2 id="intro">Intro</h2>
+        <p>This is a simple REST API for &#39;little lemon&#39; restaurant made using Django using sqllite as a database. This was created as a capstone project for Meta Backend Developer Course.</p>
+        <p>Users with different roles can browse, add and edit menu items, place orders, browse orders, assign delivery crew to orders and set delivery order status.</p>
+        <h2 id="structure">Structure</h2>
+        <h3 id="user-roles">User roles</h3>
+        <ul>
+        <li>Admin</li>
+        <li>Manager</li>
+        <li>Delivery Crew</li>
+        <li>No role = Customer</li>
+        </ul>
+        <h3 id="authentication">Authentication</h3>
+        <ul>
+        <li>Created using Djoser</li>
+        <li>Token and session authentication enabled</li>
+        <li>Id Feild : username (pk)</li>
+        </ul>
+        <h3 id="throttle">Throttle</h3>
+        <ul>
+        <li>Limits Api requests</li>
+        <li>Created using rest_framework.throttling</li>
+        <li>Throttle Rate:<ul>
+        <li>Anon: 2/min</li>
+        <li>User: 10/min</li>
+        </ul>
+        </li>
+        </ul>
+        <h2 id="database-schema">Database Schema</h2>
+        <ul>
+        <li><p>Tables:</p>
+        <ul>
+        <li>Category: id, slug, title</li>
+        <li>MenuItem: id, title, price, featured, category_id</li>
+        <li>Cart: id, user_id, menuitem_id, quantity, unit_price, price</li>
+        <li>Order: id, user_id, delivery_crew_id, status, total, date</li>
+        <li>OrderItem: id, order_id, menuitem_id, quantity, unit_price, price</li>
+        </ul>
+        </li>
+        <li><p>Relationships:</p>
+        <ul>
+        <li>A Category can have many MenuItems (One-to-Many).</li>
+        <li>A MenuItem belongs to one Category (Many-to-One).</li>
+        <li>A User can have many Cart items and many Orders (One-to-Many).</li>
+        <li>A Cart item belongs to one User and references one MenuItem (Many-to-One).</li>
+        <li>An Order belongs to one User and can optionally have one User assigned as the delivery crew (One-to-Many, nullable).</li>
+        <li>An Order can have many OrderItems (One-to-Many).</li>
+        <li>An OrderItem belongs to one Order and references one MenuItem (Many-to-One).</li>
+        </ul>
+        </li>
+        <li><p>Additional Notes:</p>
+        <ul>
+        <li>The schema uses appropriate data types for each field based on Django model definitions.</li>
+        <li>Indexes are added to columns that are frequently queried (e.g., title, price, user_id) for faster performance.</li>
+        </ul>
+        </li>
+        </ul>
+        <h2 id="endpoints">Endpoints</h2>
+        <ul>
+        <li><p><strong>{user groups &amp; user creatioin}</strong></p>
+        <ul>
+        <li>/api/users: <blockquote>
+        <p>creates a new user with password, email and username
+        */api/users/me: 
+        Displays the current user</p>
+        </blockquote>
+        </li>
+        <li><p>/api/token/login: </p>
+        <blockquote>
+        <p>Get a token with username and password</p>
+        </blockquote>
+        </li>
+        <li><p>/api/groups/manager/users:</p>
+        <blockquote>
+        <ul>
+        <li>Get: Returns all managers</li>
+        <li>Post,Delete: Assigns or Deletes the user in the payload to the manager group and returns 201-Created</li>
+        </ul>
+        </blockquote>
+        </li>
+        <li><p>/api/groups/delivery-crew/users:</p>
+        <blockquote>
+        <ul>
+        <li>Get: Returns all delivery Crew</li>
+        <li>Post: Assigns or Deletes the user in the payload to delivery crew group</li>
+        </ul>
+        </blockquote>
+        </li>
+        </ul>
+        </li>
+        <li><p><strong>{menu-item}</strong></p>
+        <ul>
+        <li><p>/api/menu-items:</p>
+        <blockquote>
+        <ul>
+        <li>Get: displays all menu items to customer</li>
+        <li>Post,Put,Delete:  add,edit or remove items, 403 Unauthorized for users that are not  Manager or Admin </li>
+        </ul>
+        </blockquote>
+        </li>
+        <li><p>/api/menu-items/{menuItem}:</p>
+        <blockquote>
+        <ul>
+        <li>GET: displays single item</li>
+        <li>Put,Delete: edit or remove selected item, 403 Unauthorized for users that are not  Manager or Admin</li>
+        </ul>
+        </blockquote>
+        </li>
+        </ul>
+        </li>
+        <li><p><strong>{cart}</strong></p>
+        <ul>
+        <li>/api/cart/menu-items:<blockquote>
+        <ul>
+        <li>Get: returns all current items in cart for user</li>
+        <li>Post: Adds menuitems to the cart sets the authenticated user as the user id of the cart items</li>
+        <li>Delete: delets all the menu items created by the current user</li>
+        </ul>
+        </blockquote>
+        </li>
+        </ul>
+        </li>
+        <li><p><strong>{Order}</strong></p>
+        <ul>
+        <li><p>/api/orders:</p>
+        <blockquote>
+        <ul>
+        <li>Get: returns all orders with order items created by the user. Only managers can see all orders. If a delivery-crew               visits orders, returns all order items assigned to the crew.</li>
+        <li>Post: creates a new order item for customer, gets current cart items from cart endpoints and adds them to order                   items table, then deletes the cart for user.</li>
+        <li>Patch: Delivery Crew can set the status of the order to 0 or 1, and can update noting else.</li>
+        </ul>
+        </blockquote>
+        </li>
+        <li><p>/api/orders/{orderId}</p>
+        <blockquote>
+        <ul>
+        <li>Get: returns items for the current id for customers.</li>
+        <li>Put,Patch: Updates the order. Manager can use this to assign delivery crew and update order status to 0 or 1.</li>
+        <li>Delete: Only managers can delete this order. </li>
+        </ul>
+        </blockquote>
+        </li>
+        </ul>
+        </li>
+        </ul>
+        <h2 id="test-users">Test Users</h2>
+        <p>Tested using Insomnia api client. go to <strong><em>api/users</em></strong> to create a user. then <strong><em>api/token/login</em></strong> to get auth token.
+        Login to admin page as superuser by going to <strong><em>loacalhost:/admin</em></strong> to access all models.</p>
+        </code></pre><h3 id="manager">Manager</h3>
+        <code><span class="hljs-attribute">username</span>: Maria<br/>
+        <span class="hljs-attribute">password</span>: maria@lemon</span>
+        </code></pre><h3 id="delivery-crew">Delivery Crew</h3>
+        <code><span class="hljs-attribute">username</span>: rider<br/>
+        <span class="hljs-attribute">password</span>: rider@lemon</span>
+        </code></pre><h3 id="customer">Customer</h3>
+        <code><span class="hljs-symbol">username:</span> cole<br/>
+        <span class="hljs-symbol">password:</span> cole1234
+        </code>
+    </div>
+  </body>
+</html>

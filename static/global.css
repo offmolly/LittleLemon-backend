@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    line-height: normal;
+    scrollbar-width: thin;
+    scrollbar-color: #25431c #6b9b5d;
+    font-family: 'M PLUS 1';
+  }
+*{
+  margin:0;
+}
+
+  :root {
+    /* fonts */
+    --font-m-plus-1-code: "M PLUS 1 Code";
+    --font-m-plus-1: "M PLUS 1";
+  
+    /* font sizes */
+    --font-size-13xl: 2rem;
+  
+    /* Colors */
+    --color-bg:#6b9b5d;
+    --color-darkolivegreen-100: #3f6036;
+    --color-darkolivegreen-200: #25431c;
+    --color-white: #fff;
+  
+    /* Paddings */
+    --padding-xl: 1.25rem;
+    --padding-41xl: 3.75rem;
+    --padding-101xl: 7.5rem;
+    --padding-31xl: 3.125rem;
+  
+    /* Border radiuses */
+    --br-xl: 20px;
+  }
+  
+/* Thin scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px; /* Adjust the width as needed */
+  height: 8px; /* Adjust the height as needed */
+}
+
+::-webkit-scrollbar-track {
+  background:var(--color-bg) ; /* Customize the track color */
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-darkolivegreen-200); /* Customize the thumb color */
+  border-radius: 4px; /* Customize the thumb border radius */
+}
