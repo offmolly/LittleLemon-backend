@@ -79,8 +79,8 @@ Users with different roles can browse, add and edit menu items, place orders, br
 
 * **{Order}**
   * /api/orders:
-    >* Get: returns all orders with order items created by the user. Only managers can see all orders. If a delivery-crew               visits orders, returns all order items assigned to the crew.
-    >* Post: creates a new order item for customer, gets current cart items from cart endpoints and adds them to order                   items table, then deletes the cart for user.
+    >* Get: returns all orders with order items created by the user. Only managers can see all orders. If a delivery-crew visits orders, returns all order items assigned to the crew.
+    >* Post: creates a new order item for customer, gets current cart items from cart endpoints and adds them to order items table, then deletes the cart for user.
     >* Patch: Delivery Crew can set the status of the order to 0 or 1, and can update noting else.
 
   * /api/orders/{orderId}
@@ -92,10 +92,6 @@ Users with different roles can browse, add and edit menu items, place orders, br
 ## Test Users
 Tested using Insomnia api client. go to ***api/users*** to create a user. then ***api/token/login*** to get auth token.
 Login to admin page as superuser by going to ***loacalhost:/admin*** to access all models.
-
-### Superuser
-    username: admin
-    password: admin@lemon
     
 ### Manager
     username: Maria
